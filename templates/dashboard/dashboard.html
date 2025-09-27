@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - VigilAI Cyber Defense System{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Cyber Defense Dashboard</h1>
+        <p class="mt-2 text-gray-600">Monitor and analyze security threats in real-time</p>
+    </div>
+
+    <!-- System Status -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-envelope text-2xl text-blue-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Email Classifier</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">
+                                    <span class="status-indicator status-operational"></span>
+                                    Operational
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-shield-alt text-2xl text-green-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">DDoS Detector</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">
+                                    <span class="status-indicator status-operational"></span>
+                                    Operational
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-user-secret text-2xl text-purple-600"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate">MITM Detector</dt>
+                        <dd class="flex items-baseline">
+                            <div class="text-2xl font-semibold text-gray-900">
+                                <span class="status-indicator status-operational"></span>
+                                Operational
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-database text-2xl text-indigo-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Database</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">
+                                    <span class="status-indicator status-operational"></span>
+                                    Operational
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Email Statistics -->
+        <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-envelope text-3xl text-blue-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Email Classifications (24h)</dt>
+                            <dd class="text-3xl font-bold text-gray-900" id="email-total">{{ email_stats.total }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div class="text-lg font-semibold text-green-600" id="email-legitimate">{{ email_stats.legitimate }}</div>
+                        <div class="text-xs text-gray-500">Legitimate</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold text-yellow-600" id="email-spam">{{ email_stats.spam }}</div>
+                        <div class="text-xs text-gray-500">Spam</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold text-red-600" id="email-phishing">{{ email_stats.phishing }}</div>
+                        <div class="text-xs text-gray-500">Phishing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Threats -->
+        <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-3xl text-red-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Network Threats (24h)</dt>
+                            <dd class="text-3xl font-bold text-gray-900" id="network-total">{{ network_stats.total_threats }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <div class="text-lg font-semibold text-orange-600" id="network-active">{{ network_stats.active_threats }}</div>
+                        <div class="text-xs text-gray-500">Active</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-semibold text-red-600" id="network-high">{{ network_stats.high_severity }}</div>
+                        <div class="text-xs text-gray-500">High Severity</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DDoS Attacks -->
+        <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bomb text-3xl text-orange-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">DDoS Attacks (24h)</dt>
+                            <dd class="text-3xl font-bold text-gray-900" id="network-ddos">{{ network_stats.ddos_attacks }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MITM Attacks -->
+        <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-user-secret text-3xl text-purple-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">MITM Attacks (24h)</dt>
+                            <dd class="text-3xl font-bold text-gray-900" id="network-mitm">{{ network_stats.mitm_attacks }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Email Classifications -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-envelope mr-2"></i>
+                    Recent Email Classifications
+                </h3>
+                <div class="flow-root">
+                    <ul class="-my-5 divide-y divide-gray-200">
+                        {% for classification in recent_classifications %}
+                        <li class="py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    {% if classification.classification == 'legitimate' %}
+                                        <i class="fas fa-check-circle text-green-500"></i>
+                                    {% elif classification.classification == 'spam' %}
+                                        <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                                    {% else %}
+                                        <i class="fas fa-times-circle text-red-500"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        {{ classification.classification|title }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Confidence: {{ classification.confidence_score|floatformat:2 }}
+                                    </p>
+                                </div>
+                                <div class="flex-shrink-0 text-sm text-gray-500">
+                                    {{ classification.created_at|timesince }} ago
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="py-4 text-center text-gray-500">
+                            No recent email classifications
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Network Threats -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Recent Network Threats
+                </h3>
+                <div class="flow-root">
+                    <ul class="-my-5 divide-y divide-gray-200">
+                        {% for threat in recent_threats %}
+                        <li class="py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    {% if threat.severity == 'critical' %}
+                                        <i class="fas fa-skull text-red-600"></i>
+                                    {% elif threat.severity == 'high' %}
+                                        <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                    {% elif threat.severity == 'medium' %}
+                                        <i class="fas fa-exclamation-circle text-yellow-500"></i>
+                                    {% else %}
+                                        <i class="fas fa-info-circle text-blue-500"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        {{ threat.threat_type|title }} from {{ threat.source_ip }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Severity: {{ threat.severity|title }}
+                                    </p>
+                                </div>
+                                <div class="flex-shrink-0 text-sm text-gray-500">
+                                    {{ threat.created_at|timesince }} ago
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="py-4 text-center text-gray-500">
+                            No recent network threats
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8">
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Quick Actions
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="{% url 'email_classifier:classifier' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-envelope mr-2"></i>
+                        Classify Email
+                    </a>
+                    <a href="{% url 'network_detection:detection' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <i class="fas fa-network-wired mr-2"></i>
+                        Analyze Network
+                    </a>
+                    <a href="{% url 'dashboard:analytics' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        View Analytics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

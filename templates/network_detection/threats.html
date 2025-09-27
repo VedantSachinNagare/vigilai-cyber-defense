@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Network Threats - VigilAI Cyber Defense System{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Network Threats</h1>
+        <p class="mt-2 text-gray-600">Monitor all detected network threats and security incidents</p>
+    </div>
+
+    <!-- Network Threats List -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                Detected Network Threats
+            </h3>
+            
+            {% if page_obj %}
+            <div class="flow-root">
+                <ul class="-my-5 divide-y divide-gray-200">
+                    {% for threat in page_obj %}
+                    <li class="py-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                {% if threat.severity == 'critical' %}
+                                    <i class="fas fa-skull text-red-600"></i>
+                                {% elif threat.severity == 'high' %}
+                                    <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                {% elif threat.severity == 'medium' %}
+                                    <i class="fas fa-exclamation-circle text-yellow-500"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle text-blue-500"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">
+                                    {{ threat.threat_type|title }} Threat from {{ threat.source_ip }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Target: {{ threat.target_ip }} | 
+                                    Severity: {{ threat.severity|title }} | 
+                                    Confidence: {{ threat.confidence_score|floatformat:2 }}
+                                </p>
+                                {% if threat.port %}
+                                <p class="text-sm text-gray-500">
+                                    Port: {{ threat.port }} | 
+                                    Protocol: {{ threat.protocol }}
+                                </p>
+                                {% endif %}
+                                {% if threat.description %}
+                                <p class="text-sm text-gray-600 mt-1">
+                                    {{ threat.description }}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-shrink-0 text-sm text-gray-500">
+                                <div class="text-right">
+                                    <div>{{ threat.created_at|timesince }} ago</div>
+                                    {% if threat.is_active %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Resolved
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-6 flex items-center justify-between">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Previous
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Previous
+                                </a>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Next
+                                </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-shield-alt text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500">No network threats detected</p>
+                <p class="text-sm text-gray-400 mt-2">The system is monitoring for threats</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

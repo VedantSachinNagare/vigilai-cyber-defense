@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block title %}Network Detection - VigilAI Cyber Defense System{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Network Threat Detection</h1>
+        <p class="mt-2 text-gray-600">Monitor and analyze network traffic for DDoS and MITM attacks</p>
+    </div>
+
+    <!-- Detection Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-3xl text-red-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Threats</dt>
+                            <dd class="text-3xl font-bold text-gray-900">{{ total_threats }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bomb text-3xl text-orange-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">DDoS Attacks</dt>
+                            <dd class="text-3xl font-bold text-gray-900">{{ ddos_attacks }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-user-secret text-3xl text-purple-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">MITM Attacks</dt>
+                            <dd class="text-3xl font-bold text-gray-900">{{ mitm_attacks }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-eye text-3xl text-blue-600"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Active Threats</dt>
+                            <dd class="text-3xl font-bold text-gray-900">{{ active_threats }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detection Controls -->
+    <div class="bg-white shadow rounded-lg mb-8">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                <i class="fas fa-cogs mr-2"></i>
+                Detection Controls
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="startDDoSDetection()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    <i class="fas fa-bomb mr-2"></i>
+                    Start DDoS Detection
+                </button>
+                
+                <button onclick="startMITMDetection()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    <i class="fas fa-user-secret mr-2"></i>
+                    Start MITM Detection
+                </button>
+                
+                <button onclick="analyzeNetworkLogs()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="fas fa-search mr-2"></i>
+                    Analyze Network Logs
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Threats -->
+    <div class="bg-white shadow rounded-lg mb-8">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                <i class="fas fa-history mr-2"></i>
+                Recent Network Threats
+            </h3>
+            
+            <div class="flow-root">
+                <ul class="-my-5 divide-y divide-gray-200">
+                    {% for threat in recent_threats %}
+                    <li class="py-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                {% if threat.severity == 'critical' %}
+                                    <i class="fas fa-skull text-red-600"></i>
+                                {% elif threat.severity == 'high' %}
+                                    <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                {% elif threat.severity == 'medium' %}
+                                    <i class="fas fa-exclamation-circle text-yellow-500"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle text-blue-500"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">
+                                    {{ threat.threat_type|title }} from {{ threat.source_ip }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Severity: {{ threat.severity|title }} | 
+                                    Confidence: {{ threat.confidence_score|floatformat:2 }} |
+                                    {% if threat.is_active %}
+                                        <span class="text-red-600">Active</span>
+                                    {% else %}
+                                        <span class="text-green-600">Resolved</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="flex-shrink-0 text-sm text-gray-500">
+                                {{ threat.created_at|timesince }} ago
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="py-4 text-center text-gray-500">
+                        No recent network threats detected
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detection Modules -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- DDoS Detection -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-bomb mr-2"></i>
+                    DDoS Attack Detection
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <h4 class="font-medium text-orange-800 mb-2">Detection Methods</h4>
+                        <ul class="text-sm text-orange-700 space-y-1">
+                            <li>• Request rate analysis</li>
+                            <li>• IP frequency monitoring</li>
+                            <li>• Traffic pattern recognition</li>
+                            <li>• Anomaly detection algorithms</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-800 mb-2">Current Status</h4>
+                        <div class="flex items-center">
+                            <span class="status-indicator status-operational"></span>
+                            <span class="text-sm text-gray-700">Monitoring active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MITM Detection -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-user-secret mr-2"></i>
+                    MITM Attack Detection
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">Detection Methods</h4>
+                        <ul class="text-sm text-purple-700 space-y-1">
+                            <li>• SSL/TLS certificate analysis</li>
+                            <li>• Certificate issuer validation</li>
+                            <li>• Cipher suite strength check</li>
+                            <li>• SSL stripping detection</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-800 mb-2">Current Status</h4>
+                        <div class="flex items-center">
+                            <span class="status-indicator status-operational"></span>
+                            <span class="text-sm text-gray-700">Monitoring active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8">
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Quick Actions
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <a href="{% url 'network_detection:ddos' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                        <i class="fas fa-bomb mr-2"></i>
+                        DDoS Attacks
+                    </a>
+                    <a href="{% url 'network_detection:mitm' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <i class="fas fa-user-secret mr-2"></i>
+                        MITM Attacks
+                    </a>
+                    <a href="{% url 'network_detection:threats' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        All Threats
+                    </a>
+                    <a href="{% url 'network_detection:logs' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-list mr-2"></i>
+                        Network Logs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function startDDoSDetection() {
+    // Simulate DDoS detection start
+    alert('DDoS detection started. Monitoring network traffic for anomalies...');
+}
+
+function startMITMDetection() {
+    // Simulate MITM detection start
+    alert('MITM detection started. Analyzing SSL/TLS connections...');
+}
+
+function analyzeNetworkLogs() {
+    // Simulate network log analysis
+    alert('Analyzing network logs for threats...');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - VigilAI Cyber Defense System{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">System Settings</h1>
+        <p class="mt-2 text-gray-600">Configure system parameters and security settings</p>
+    </div>
+
+    <!-- Settings Forms -->
+    <div class="space-y-8">
+        <!-- Email Classification Settings -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-envelope mr-2"></i>
+                    Email Classification Settings
+                </h3>
+                
+                <form class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="confidence_threshold" class="block text-sm font-medium text-gray-700 mb-2">
+                                Confidence Threshold
+                            </label>
+                            <input type="number" id="confidence_threshold" value="0.7" min="0" max="1" step="0.1" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">Minimum confidence score for classification</p>
+                        </div>
+                        
+                        <div>
+                            <label for="model_type" class="block text-sm font-medium text-gray-700 mb-2">
+                                Classification Model
+                            </label>
+                            <select id="model_type" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="distilbert">DistilBERT + Rules</option>
+                                <option value="rules_only">Rules Only</option>
+                                <option value="ml_only">Machine Learning Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input type="checkbox" id="auto_classify" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="auto_classify" class="ml-2 block text-sm text-gray-900">
+                            Enable automatic email classification
+                        </label>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Network Detection Settings -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-network-wired mr-2"></i>
+                    Network Detection Settings
+                </h3>
+                
+                <form class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="ddos_threshold" class="block text-sm font-medium text-gray-700 mb-2">
+                                DDoS Detection Threshold
+                            </label>
+                            <input type="number" id="ddos_threshold" value="100" min="10" max="1000" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">Requests per minute to trigger DDoS detection</p>
+                        </div>
+                        
+                        <div>
+                            <label for="mitm_threshold" class="block text-sm font-medium text-gray-700 mb-2">
+                                MITM Detection Threshold
+                            </label>
+                            <input type="number" id="mitm_threshold" value="0.5" min="0" max="1" step="0.1" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">Confidence threshold for MITM detection</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="ddos_detection" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="ddos_detection" class="ml-2 block text-sm text-gray-900">
+                                Enable DDoS detection
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="mitm_detection" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="mitm_detection" class="ml-2 block text-sm text-gray-900">
+                                Enable MITM detection
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="auto_block" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="auto_block" class="ml-2 block text-sm text-gray-900">
+                                Enable automatic threat blocking
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-bell mr-2"></i>
+                    Notification Settings
+                </h3>
+                
+                <form class="space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="email_notifications" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="email_notifications" class="ml-2 block text-sm text-gray-900">
+                                Email notifications for high-severity threats
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="dashboard_alerts" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="dashboard_alerts" class="ml-2 block text-sm text-gray-900">
+                                Dashboard alerts for new threats
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="api_notifications" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="api_notifications" class="ml-2 block text-sm text-gray-900">
+                                API notifications for integrations
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="notification_email" class="block text-sm font-medium text-gray-700 mb-2">
+                            Notification Email
+                        </label>
+                        <input type="email" id="notification_email" value="admin@example.com" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    System Information
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">System Version:</span>
+                            <span class="font-medium">1.0.0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Django Version:</span>
+                            <span class="font-medium">4.2.7</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Python Version:</span>
+                            <span class="font-medium">3.9.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Database:</span>
+                            <span class="font-medium">SQLite</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Last Update:</span>
+                            <span class="font-medium">2024-01-15</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Status:</span>
+                            <span class="font-medium text-green-600">Operational</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

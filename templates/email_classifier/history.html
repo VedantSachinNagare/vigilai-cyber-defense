@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Classification History - VigilAI Cyber Defense System{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Email Classification History</h1>
+        <p class="mt-2 text-gray-600">View your email classification history and results</p>
+    </div>
+
+    <!-- Classification History -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                <i class="fas fa-history mr-2"></i>
+                Classification History
+            </h3>
+            
+            {% if classifications %}
+            <div class="flow-root">
+                <ul class="-my-5 divide-y divide-gray-200">
+                    {% for classification in classifications %}
+                    <li class="py-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                {% if classification.classification == 'legitimate' %}
+                                    <i class="fas fa-check-circle text-green-500"></i>
+                                {% elif classification.classification == 'spam' %}
+                                    <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle text-red-500"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">
+                                    {{ classification.classification|title }}
+                                </p>
+                                <p class="text-sm text-gray-500 truncate">
+                                    {{ classification.email_content|truncatechars:100 }}
+                                </p>
+                                <div class="mt-2 flex space-x-4 text-xs text-gray-500">
+                                    <span>Confidence: {{ classification.confidence_score|floatformat:2 }}</span>
+                                    <span>Legitimate: {{ classification.legitimate_score|floatformat:2 }}</span>
+                                    <span>Spam: {{ classification.spam_score|floatformat:2 }}</span>
+                                    <span>Phishing: {{ classification.phishing_score|floatformat:2 }}</span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 text-sm text-gray-500">
+                                {{ classification.created_at|timesince }} ago
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500">No email classifications found</p>
+                <a href="{% url 'email_classifier:classifier' %}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    <i class="fas fa-plus mr-2"></i>
+                    Classify Your First Email
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

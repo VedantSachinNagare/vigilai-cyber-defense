@@ -1,0 +1,11 @@
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+transformers
+torch
+scikit-learn
+pandas
+numpy
+python-decouple==3.8
+Pillow
+whitenoise==6.6.0

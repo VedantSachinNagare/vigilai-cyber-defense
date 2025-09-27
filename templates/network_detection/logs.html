@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Network Logs - VigilAI Cyber Defense System{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Network Logs</h1>
+        <p class="mt-2 text-gray-600">Monitor network traffic and connection logs</p>
+    </div>
+
+    <!-- Network Logs List -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                <i class="fas fa-list mr-2"></i>
+                Network Traffic Logs
+            </h3>
+            
+            {% if page_obj %}
+            <div class="flow-root">
+                <ul class="-my-5 divide-y divide-gray-200">
+                    {% for log in page_obj %}
+                    <li class="py-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                {% if log.log_type == 'https' %}
+                                    <i class="fas fa-lock text-green-500"></i>
+                                {% elif log.log_type == 'http' %}
+                                    <i class="fas fa-unlock text-yellow-500"></i>
+                                {% elif log.log_type == 'tcp' %}
+                                    <i class="fas fa-network-wired text-blue-500"></i>
+                                {% elif log.log_type == 'udp' %}
+                                    <i class="fas fa-broadcast-tower text-purple-500"></i>
+                                {% else %}
+                                    <i class="fas fa-circle text-gray-500"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">
+                                    {{ log.source_ip }} → {{ log.destination_ip }}:{{ log.port }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Type: {{ log.log_type|upper }} | 
+                                    Protocol: {{ log.protocol }} | 
+                                    Duration: {{ log.duration|floatformat:2 }}s
+                                </p>
+                                {% if log.request_path %}
+                                <p class="text-sm text-gray-500">
+                                    Path: {{ log.request_path }}
+                                </p>
+                                {% endif %}
+                                {% if log.response_code %}
+                                <p class="text-sm text-gray-500">
+                                    Response: {{ log.response_code }} | 
+                                    Bytes: {{ log.bytes_sent|filesizeformat }} sent, {{ log.bytes_received|filesizeformat }} received
+                                </p>
+                                {% endif %}
+                                {% if log.user_agent %}
+                                <p class="text-sm text-gray-500 truncate">
+                                    User Agent: {{ log.user_agent }}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-shrink-0 text-sm text-gray-500">
+                                {{ log.timestamp|date:"M d, Y H:i:s" }}
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-6 flex items-center justify-between">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Previous
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Previous
+                                </a>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Next
+                                </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500">No network logs found</p>
+                <p class="text-sm text-gray-400 mt-2">Network traffic will appear here when detected</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
