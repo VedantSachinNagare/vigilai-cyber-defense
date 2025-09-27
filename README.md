@@ -223,7 +223,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-If you have any questions or need help, please open an issue or contact me at your.email@example.com
+If you have any questions or need help, please open an issue or contact me at vedantnagare25@gmail.com
 
 ---
 
